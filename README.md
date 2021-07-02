@@ -7,20 +7,31 @@ Note, this library is still quite new (2021/07/02). It's quite likely to have ma
 
 ## Example usage
 
+The main functionality reflects legacy behaviour in PostfixAdmin with a 'pacrypt' function, which when given ...
+
+ * one argument - clear text password -> returns a hash.
+ * two arguments - clear text password and stored hash -> if the return value matches the stored hash, then the clear text password was a match for the hash we have.
+
 ```PHP
-$tool = new \PostfixAdmin\PasswordHashing\Crypt();
+$tool = new \PostfixAdmin\PasswordHashing\Crypt('ARGON2I');
 
 // should output something to indicate what your system supports (may be dependent on PHP variant, PHP modules etc)
-var_dump($tool->supportedMechanisms()); // e.g. MD5, SHA1, ARGON2I. 
 
-var_dump($tool->hash(Crypt::CLEARTEXT, 'fishbeans'));
+$hash = $tool->crypt('fishbeans');
 
-var_dump($tool->hash(Crypt::MD5, 'fishbeans'));
+echo "Hash is : $hash \n";
 
-var_dump($tool->verify(Crypt::MD5, 'fishbeans', 'some-hash'));
+echo "Verify : " . json_encode($hash == $tool->crypt('fishbeans', $hash)) . "\n";
+echo "Verify fails with : " . json_encode('cat' == $tool->crypt('fishbeans', $hash)) . "\n";
 
-var_dump($tool->verify(Crypt::ARGON2I, 'fishbeans', 'some-hash'));
+```
 
+the above code will output something similar to : 
+
+```text
+Hash is : {ARGON2I}$argon2i$v=19$m=65536,t=4,p=1$d1JMUXVHSUtLTGhxYnowVQ$4raz6DDUbtRysi+1ZTdNL3L5j4tcSYnzWxyLVDtFjKc 
+Verify : true
+Verify fails with : false
 ```
 
 
