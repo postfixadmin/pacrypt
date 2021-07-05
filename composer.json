@@ -10,7 +10,7 @@
         "phpunit/phpunit": "^8|^9",
         "friendsofphp/php-cs-fixer" : "*"
     },
-    "license": "GPLv2",
+    "license": "GPL-2.0",
     "scripts": {
         "psalm" : "@php vendor/bin/psalm src",
         "test" : "@php vendor/bin/phpunit tests",
