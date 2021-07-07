@@ -20,7 +20,8 @@ class CryptTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($hash, $h->crypt('test', $hash));
     }
 
-    public function testCryptWithOrWithoutPrefix() {
+    public function testCryptWithOrWithoutPrefix()
+    {
 
         // SHA512 CRYPT
         $hash = '$6$1O7.LNhM058togZg$yH3NA1/SgX/Nn0Q9NlnSN.i8dHeEdHDRn1RPbhDykvyrt/dMA4qeJZ61RA8ov7uFoSJSQ87u7UZfk/jjfUayW0';
@@ -40,7 +41,6 @@ class CryptTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($crypt, $check);
         $this->assertNotEquals($not_crypt, $check);
-
     }
 
 
@@ -97,7 +97,6 @@ EOF;
         $algo_example = json_decode($example_json, true);
 
         foreach ($algo_example as $algorithm => $example_hash) {
-
             $h = new Crypt($algorithm);
 
             $pfa_new_hash = $h->crypt('test123');
