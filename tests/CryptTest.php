@@ -83,6 +83,7 @@ class CryptTest extends \PHPUnit\Framework\TestCase
     "SHA512.B64": "{SHA512.B64}2u9JU7l4M2XK1mFSI3IFBsxGxRZ80Wq1APpZeqCP+WTrJPsZaH8012Zfd4\/LbFNY\/ApbgeFmLPkPc6JnHFP5kQ==",
     "CRYPT": "{CRYPT}$2y$05$ORqzr0AagWr25v3ixHD5QuMXympIoNTbipEFZz6aAmovGNoij2vDO",
     "MD5-CRYPT": "{MD5-CRYPT}$1$AIjpWveQ$2s3eEAbZiqkJhMYUIVR240",
+    "SYSTEM": "abRcsZmlrrKFA",
     "PLAIN-MD5": "{PLAIN-MD5}cc03e747a6afbbcbf8be7668acfebee5",
     "SSHA": "{SSHA}ZkqrSEAhvd0FTHaK1IxAQCRa5LWbxGQY",
     "PLAIN": "{PLAIN}test123",

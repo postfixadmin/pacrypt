@@ -20,9 +20,10 @@ class Crypt
         'ARGON2ID.B64',
         'SHA256', 'SHA256-CRYPT', 'SHA256-CRYPT.B64',
         'SHA512', 'SHA512.B64',
-        'MD5-CRYPT',
+        'MD5-CRYPT', // crypt with $1$ prefix.
         'PLAIN-MD5', 'MD5',
-        'CRYPT',
+        'CRYPT',  // anything crypt() can cope with, optional {CRYPT} prefix, new hashes will use CRYPT_BLOWFISH
+        'SYSTEM', // DES CRYPT, probably best to avoid
         'PLAIN', 'CLEAR', 'CLEARTEXT',
     ];
 
