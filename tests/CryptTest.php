@@ -66,34 +66,6 @@ class CryptTest extends \PHPUnit\Framework\TestCase
     {
         global $CONF;
 
-        $algo_list = [
-            'SHA1',
-            'SHA1.B64',
-
-            'BLF-CRYPT',
-            'BLF-CRYPT.B64',
-
-            'SHA512-CRYPT',
-            'SHA512-CRYPT.B64',
-
-            'SHA512',
-            'SHA512.B64',
-
-            // 'DES-CRYPT',
-            'CRYPT',
-            'MD5-CRYPT',
-            'PLAIN-MD5',
-            'PLAIN',
-            'CLEAR',
-            'CLEARTEXT',
-            'ARGON2I',
-            "ARGON2ID",
-            //'MD5', // seems to be identical to MD5-CRYPT and clashes with {MD5} form courier. Avoid?
-            'SHA256',
-            'SHA256-CRYPT',
-            'SHA256-CRYPT.B64',
-        ];
-
         // should all be from 'test123', generated via dovecot.
         $example_json = <<<'EOF'
 {
@@ -125,7 +97,6 @@ EOF;
         $algo_example = json_decode($example_json, true);
 
         foreach ($algo_example as $algorithm => $example_hash) {
-            $CONF['encrypt'] = $algorithm;
 
             $h = new Crypt($algorithm);
 
