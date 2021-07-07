@@ -104,17 +104,22 @@ class Crypt
                 return $this->cryptMd5($clearText, $passwordHash, $algorithm);
 
             case 'CRYPT':
+                $prefix = false;
                 if (!empty($passwordHash)) {
+                    $prefix = (substr($passwordHash, 0, 7) == '{CRYPT}');
                     $passwordHash = preg_replace('/^{CRYPT}/', '', $passwordHash);
                 }
                 if (empty($passwordHash)) {
                     $passwordHash = '$2y$10$' . substr(sha1(random_bytes(8)), 0, 22);
                 }
-                return '{CRYPT}' . crypt($clearText, $passwordHash);
+                $str = crypt($clearText, $passwordHash);
+                return $prefix ? '{CRYPT}' . $str : $str;
 
+
+            // legacy / older crypt variant (weaker salt, weaker mechanism, DES)
             case 'SYSTEM':
                 if (empty($passwordHash)) {
-                    $passwordHash = bin2hex(random_bytes(1)); // XXX is 2 chars right for a salt here?
+                    $passwordHash = bin2hex(random_bytes(1)); // CRYPT_STD_DES
                 }
                 return crypt($clearText, $passwordHash);
 

@@ -20,6 +20,30 @@ class CryptTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($hash, $h->crypt('test', $hash));
     }
 
+    public function testCryptWithOrWithoutPrefix() {
+
+        // SHA512 CRYPT
+        $hash = '$6$1O7.LNhM058togZg$yH3NA1/SgX/Nn0Q9NlnSN.i8dHeEdHDRn1RPbhDykvyrt/dMA4qeJZ61RA8ov7uFoSJSQ87u7UZfk/jjfUayW0';
+
+        $h = new Crypt('CRYPT');
+        $crypt = $h->crypt('test1234?', $hash);
+
+        $this->assertEquals($crypt, $hash);
+
+        $new = $h->crypt('test1234?');
+        $this->assertNotEquals($hash, $new);
+
+        // BLOWFISH CRYPT
+        $check = '{CRYPT}$2y$10$ee26ef01d29d3d939c079u7LkOJuYmIhJV8yLd3AU6xdORaxc5HqS';
+        $crypt = $h->crypt('test1234?', $check);
+        $not_crypt = $h->crypt('picklesmells', $check);
+
+        $this->assertEquals($crypt, $check);
+        $this->assertNotEquals($not_crypt, $check);
+
+    }
+
+
     public function testMd5()
     {
         $h = new Crypt('PLAIN-MD5');
