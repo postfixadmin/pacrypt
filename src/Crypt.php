@@ -10,8 +10,10 @@ class Crypt
     private $algorithm;
 
     public const SUPPORTED = [
-        'COURIER:MD5', // binary md5 base64 encoded.
-        'COURIER:MD5RAW', // hex-encoded md5 with {MD5RAW} prefix.
+        'COURIER:MD5', // binary md5 base64 encoded
+        'COURIER:MD5RAW', // hex-encoded md5 with {MD5RAW} prefix
+        'COURIER:SSHA', // same as SSHA
+        'COURIER:SHA256', // same as SHA256
         'SHA1', 'SHA1.HEX', 'SHA1.B64',
         'SSHA',
         'BLF-CRYPT', 'BLF-CRYPT.B64',
