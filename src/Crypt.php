@@ -33,6 +33,7 @@ class Crypt
 
     public function __construct(string $algorithm)
     {
+        $algorithm = strtoupper($algorithm);
         if (!in_array($algorithm, self::SUPPORTED)) {
             throw new \InvalidArgumentException("Unsupported hashing scheme / algorith : $algorithm");
         }
