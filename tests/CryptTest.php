@@ -16,7 +16,7 @@ class CryptTest extends \PHPUnit\Framework\TestCase
 
         $this->assertNotEmpty($hash);
         $this->assertNotEquals('test', $hash);
-        $this->assertRegExp('/^{MD5-CRYPT}\$1\$/', $hash);
+        $this->assertMatchesRegularExpression('/^{MD5-CRYPT}\$1\$/', $hash);
         $this->assertEquals($hash, $h->crypt('test', $hash));
     }
 
