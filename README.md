@@ -23,15 +23,20 @@ Currently :
  * SHA512, SHA512.B64
  * MD5-CRYPT, MD5
  * PLAIN-MD5
- * CRYPT
- * PLAIN, CLEAR, CLAERTEXT
+ * CRYPT ({CRYPT} prefix, defaults to use Blowfish)
+ * SYSTEM (DES CRYPT, best avoid)
+ * PLAIN, CLEAR, CLEARTEXT (useful for testing)
+ * COURIER:MD5
+ * COURIER:MD5RAW
+ * COURIER:SSHA (same as SSHA)
+ * COURIER:SHA256 (same as SHA256)
 
 ## Example usage
 
 The main functionality reflects legacy behaviour in PostfixAdmin with a 'pacrypt' function, which when given ...
 
- * one argument - clear text password -> returns a hash.
- * two arguments - clear text password and stored hash -> if the return value matches the stored hash, then the clear text password was a match for the hash we have.
+ * one argument - clear text password - returns a hash.
+ * two arguments - clear text password and stored hash - if the if the return value matches the stored hash, then the clear text password was a match for the hash we have.
 
 ```PHP
 $tool = new \PostfixAdmin\PasswordHashing\Crypt('ARGON2I');
