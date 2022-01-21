@@ -16,6 +16,7 @@ class Crypt
         'COURIER:SHA256', // same as SHA256
         'SHA1', 'SHA1.HEX', 'SHA1.B64',
         'SSHA',
+        'SSHA512',
         'BLF-CRYPT', 'BLF-CRYPT.B64',
         'SHA512-CRYPT', 'SHA512-CRYPT.B64',
         'ARGON2I',
@@ -81,6 +82,9 @@ class Crypt
             case 'SSHA':
             case 'COURIER:SSHA':
                 return $this->hashSha1Salted($clearText, $passwordHash);
+
+            case 'SSHA512':
+                return $this->hashSha512Salted($clearText, $passwordHash);
 
             case 'SHA256':
             case 'COURIER:SHA256':
@@ -163,6 +167,16 @@ class Crypt
             $salt = substr(base64_decode(substr($hash, 6)), 20);
         }
         return '{SSHA}' . base64_encode(sha1($clearText . $salt, true) . $salt);
+    }
+
+    public function hashSha512Salted(string $clearText, string $hash = null): string
+    {
+        if (empty($hash)) {
+            $salt = base64_encode(random_bytes(16));
+        } else {
+            $salt = substr(base64_decode(substr($hash, 9)), 64);
+        }
+        return '{SSHA512}' . base64_encode(hash('sha512', $clearText . $salt, true) . $salt);
     }
 
     public function hashSha512(string $clearText, string $algorithm = 'SHA512')
