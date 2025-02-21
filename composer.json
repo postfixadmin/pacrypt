@@ -3,7 +3,7 @@
     "description": "Routines to generate password hashes, useful for Dovecot or Courier Mail servers",
     "type": "library",
     "require": {
-        "php": ">=7.2"
+        "php": ">=7.4"
     },
     "require-dev": {
         "psalm/phar": "^5",
