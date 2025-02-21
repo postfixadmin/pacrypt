@@ -6,13 +6,13 @@
         "php": ">=7.2"
     },
     "require-dev": {
-        "vimeo/psalm": "^4.8",
+        "psalm/phar": "^5",
         "phpunit/phpunit": "^8|^9",
         "friendsofphp/php-cs-fixer" : "*"
     },
     "license": "GPL-2.0",
     "scripts": {
-        "psalm" : "@php vendor/bin/psalm src",
+        "psalm" : "@php vendor/bin/psalm.phar src",
         "test" : "@php vendor/bin/phpunit tests",
         "format" : [
             "@php vendor/bin/php-cs-fixer fix src ",
