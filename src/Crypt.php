@@ -46,14 +46,18 @@ class Crypt
      *
      * If the return value matches $pw_db, then the plain text password ('pw') is correct.
      *
-     * @param string $pw - plain text password
-     * @param string $pw_db - hash from e.g. database (what we're comparing $pw to).
+     * @param string $clearText - plain text password
+     * @param ?string $passwordHash - hash from e.g. database (what we're comparing $pw to).
      * @return string if $pw is correct (hashes to $pw_db) then we return $pw_db. Else we return a new hash.
      *
      * @throws Exception
      */
-    public function crypt(string $clearText, string $passwordHash = null): string
+    public function crypt(string $clearText, ?string $passwordHash = null): string
     {
+        if (is_string($passwordHash) && empty($passwordHash)) {
+            $passwordHash = null;
+        }
+
         $algorithm = $this->algorithm;
 
         switch ($this->algorithm) {
@@ -114,11 +118,11 @@ class Crypt
 
             case 'CRYPT':
                 $prefix = false;
-                if (!empty($passwordHash)) {
+                if (!is_null($passwordHash)) {
                     $prefix = (substr($passwordHash, 0, 7) == '{CRYPT}');
                     $passwordHash = preg_replace('/^{CRYPT}/', '', $passwordHash);
                 }
-                if (empty($passwordHash)) {
+                if (is_null($passwordHash)) {
                     $passwordHash = '$2y$10$' . substr(sha1(random_bytes(8)), 0, 22);
                 }
                 $str = crypt($clearText, $passwordHash);
@@ -159,9 +163,11 @@ class Crypt
         return "{{$algorithm}}{$hash}";
     }
 
-    public function hashSha1Salted(string $clearText, string $hash = null): string
+    public function hashSha1Salted(string $clearText, ?string $hash = null): string
     {
-        if (empty($hash)) {
+        $hash = $this->changeEmptyHashToNull($hash);
+
+        if (is_null($hash)) {
             $salt = base64_encode(random_bytes(3)); // 4 char salt.
         } else {
             $salt = substr(base64_decode(substr($hash, 6)), 20);
@@ -169,9 +175,11 @@ class Crypt
         return '{SSHA}' . base64_encode(sha1($clearText . $salt, true) . $salt);
     }
 
-    public function hashSha512Salted(string $clearText, string $hash = null): string
+    public function hashSha512Salted(string $clearText, ?string $hash = null): string
     {
-        if (empty($hash)) {
+        $hash = $this->changeEmptyHashToNull($hash);
+
+        if (is_null($hash)) {
             $salt = base64_encode(random_bytes(16));
         } else {
             $salt = substr(base64_decode(substr($hash, 9)), 64);
@@ -179,7 +187,7 @@ class Crypt
         return '{SSHA512}' . base64_encode(hash('sha512', $clearText . $salt, true) . $salt);
     }
 
-    public function hashSha512(string $clearText, string $algorithm = 'SHA512')
+    public function hashSha512(string $clearText, string $algorithm = 'SHA512'): string
     {
         $prefix = '{SHA512}';
 
@@ -203,20 +211,24 @@ class Crypt
         return '{SHA256}' . base64_encode(hash('sha256', $clearText, true));
     }
 
-    public function cryptMd5(string $clearText, string $hash = null, $algorithm = 'MD5-CRYPT')
+    public function cryptMd5(string $clearText, ?string $hash = null, string $algorithm = 'MD5-CRYPT'): string
     {
-        if (!empty($hash)) {
+        $hash = $this->changeEmptyHashToNull($hash);
+
+        if (is_string($hash)) {
             $hash = preg_replace('/^{MD5.*}/', '', $hash);
         }
-        if (empty($hash)) {
+        if (is_null($hash)) {
             $hash = '$1$' . substr(sha1(random_bytes(8)), 0, 16);
         }
         return "{{$algorithm}}" . crypt($clearText, $hash);
     }
 
-    public function blowfishCrypt(string $clearText, string $hash = null, string $algorithm = 'BLF-CRYPT'): string
+    public function blowfishCrypt(string $clearText, ?string $hash = null, string $algorithm = 'BLF-CRYPT'): string
     {
-        if (!empty($hash)) {
+        $hash = $this->changeEmptyHashToNull($hash);
+
+        if (is_string($hash)) {
             if ($algorithm == 'BLF-CRYPT') {
                 $hash = preg_replace('/^{BLF-CRYPT}/', '', $hash);
             }
@@ -244,9 +256,11 @@ class Crypt
         return '{BLF-CRYPT}' . $r;
     }
 
-    public function sha256Crypt(string $clearText, string $hash = null, string $algorithm = 'SHA256-CRYPT'): string
+    public function sha256Crypt(string $clearText, ?string $hash = null, string $algorithm = 'SHA256-CRYPT'): string
     {
-        if (!empty($hash)) {
+        $hash = $this->changeEmptyHashToNull($hash);
+
+        if (is_string($hash)) {
             $hash = preg_replace('/^{SHA256-CRYPT(\.B64)?}/', '', $hash);
 
             if ($algorithm == 'SHA256-CRYPT.B64') {
@@ -254,7 +268,7 @@ class Crypt
             }
         }
 
-        if (empty($hash)) {
+        if (is_null($hash)) {
             $hash = '$5$' . substr(sha1(random_bytes(8)), 0, 16);
         }
 
@@ -266,9 +280,11 @@ class Crypt
         return "{SHA256-CRYPT}" . $generated;
     }
 
-    public function sha512Crypt(string $pw, string $hash = null, string $algorithm = 'SHA512-CRYPT'): string
+    public function sha512Crypt(string $pw, ?string $hash = null, string $algorithm = 'SHA512-CRYPT'): string
     {
-        if (!empty($hash)) {
+        $hash = $this->changeEmptyHashToNull($hash);
+
+        if (is_string($hash)) {
             $hash = preg_replace('/^{SHA512-CRYPT(\.B64)?}/', '', $hash);
 
             if ($algorithm == 'SHA512-CRYPT.B64') {
@@ -276,7 +292,7 @@ class Crypt
             }
         }
 
-        if (empty($hash)) {
+        if (is_null($hash)) {
             $hash = '$6$' . substr(sha1(random_bytes(8)), 0, 16);
         }
 
@@ -290,9 +306,17 @@ class Crypt
         return "{SHA512-CRYPT}$generated";
     }
 
-    public function argon2ICrypt(string $clearText, string $hash = null, $algorithm = 'ARGON2I'): string
+    /**
+     * @param string $clearText
+     * @param string|null $hash
+     * @param $algorithm
+     * @return string
+     */
+    public function argon2ICrypt(string $clearText, ?string $hash = null, string $algorithm = 'ARGON2I'): string
     {
-        if (!empty($hash)) {
+        $hash = $this->changeEmptyHashToNull($hash);
+
+        if (is_string($hash)) {
             $hash = preg_replace('/^{ARGON2I(\.B64)?}/', '', $hash);
             $orig_pwdb = $hash;
             if ($algorithm == 'ARGON2I.B64') {
@@ -325,13 +349,15 @@ class Crypt
         return "{ARGON2I.B64}" . base64_encode($generated);
     }
 
-    public function argon2idCrypt(string $clearText, string $hash = null, string $algorithm = 'ARGON2ID'): string
+    public function argon2idCrypt(string $clearText, ?string $hash = null, string $algorithm = 'ARGON2ID'): string
     {
         if (!defined('PASSWORD_ARGON2ID')) {
             throw new Exception("$algorithm is not supported; requires PHP 7.3+");
         }
 
-        if (!empty($hash)) {
+        $hash = $this->changeEmptyHashToNull($hash);
+
+        if (is_string($hash)) {
             $hash = preg_replace('/^{ARGON2ID(\.B64)?}/', '', $hash);
 
             $orig_pwdb = $hash;
@@ -365,5 +391,12 @@ class Crypt
             return '{ARGON2ID}' . $generated;
         }
         return '{ARGON2ID.B64}' . base64_encode($generated);
+    }
+
+    private function changeEmptyHashToNull(?string $hash) : ?string {
+        if (is_string($hash) && empty($hash)) {
+            return $hash;
+        }
+        return $hash;
     }
 }
