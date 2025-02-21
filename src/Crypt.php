@@ -129,7 +129,7 @@ class Crypt
                 return $prefix ? '{CRYPT}' . $str : $str;
 
 
-            // legacy / older crypt variant (weaker salt, weaker mechanism, DES)
+                // legacy / older crypt variant (weaker salt, weaker mechanism, DES)
             case 'SYSTEM':
                 if (empty($passwordHash)) {
                     $passwordHash = bin2hex(random_bytes(1)); // CRYPT_STD_DES
@@ -393,7 +393,8 @@ class Crypt
         return '{ARGON2ID.B64}' . base64_encode($generated);
     }
 
-    private function changeEmptyHashToNull(?string $hash) : ?string {
+    private function changeEmptyHashToNull(?string $hash): ?string
+    {
         if (is_string($hash) && empty($hash)) {
             return $hash;
         }
